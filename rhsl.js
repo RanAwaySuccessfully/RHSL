@@ -27,7 +27,7 @@ function rhslAddRemove(element, value, shouldRemove) {
         if (!element) throw "No element was provided.";
         if (element.tagName !== ("BUTTON") && element.tagName !== ("INPUT")) throw "Element is not <button> or <input>.";
         if (element.tagName === ("INPUT") && (element.type && element.type !== "text")) throw "Input type must be empty or text.";
-    } catch(error) {console.error("RHSL: Error while trying to draw add/remove an EventListener: " + error); return;}
+    } catch(error) {console.error("RHSL: Error while trying to add/remove an EventListener: " + error); return;}
     if (shouldRemove) {
         element.removeEventListener("click", rhslToggle, false);
     } else {
