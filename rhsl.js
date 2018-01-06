@@ -72,7 +72,7 @@ function rhslToggle(event, element, refresh) {
         } else {
             var themeCSS = ["border-color: #AAA; background: #DDD;", "border-color: #555;"];
         }
-        if (hsltype === "luv") {
+        if (hsltype === "luv" && window.hsluv) {
             var hslvalue = rhslColorConverter(element.value);
             hslvalue = window.hsluv.rgbToHsluv([hslvalue[0] / 255, hslvalue[1] / 255, hslvalue[2] / 255]);
             var bg1 = 'linear-gradient(90deg, #EA0064, #D34800, #AC6700, #957200, #817900, #6A8000, #3F8700, #00894B, #00876A, #00867C, #00848B, #00829C, #007EB7, #2A6CFF, #A23EFF, #CD00E2, #D900BC, #E20097, #EA0064)';
@@ -198,7 +198,7 @@ function rhslColorPicker(element, event, isclick, coords) {
     if (x > mainColor.clientWidth && !isSide) {x = mainColor.clientWidth;}
     if (y > mainColor.clientHeight) {y = mainColor.clientHeight;}
     var input = rhslCurrentElement();
-    if (input.getAttribute("rhslcolor").match(/hsltype: ?luv;/)) {var isLUV = true;} else {var isLUV = false;}
+    if (input.getAttribute("rhslcolor").match(/hsltype: ?luv;/) && window.hsluv) {var isLUV = true;} else {var isLUV = false;}
     if (isSide) {
         sideColor.firstElementChild.style.top = y - 10 + "px";
         var hue = Math.round((Number(mainColor.children[0].firstElementChild.style.left.match(/-?\d+/)) + 10) / mainColor.clientWidth * 360);
