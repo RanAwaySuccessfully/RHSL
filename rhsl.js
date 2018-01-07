@@ -370,14 +370,13 @@ function rhslColorParser(color, changeTo, isLUV, toArray) {
     return color;
 }
 function rhslContrast(bgColor, isLUV) {
-    var textColor = [0, 0, 0];
     bgColor.forEach(rhslSrgbMadness);
-    textColor.forEach(rhslSrgbMadness);
     var L1 = (0.2126 * bgColor[0]) + (0.7152 * bgColor[1]) + (0.0722 * bgColor[2]);
-    var L2 = (0.2126 * textColor[0]) + (0.7152 * textColor[1]) + (0.0722 * textColor[2]);
-    if (L2 > L1) {var contrast = (L2 + 0.05) / (L1 + 0.05)} else {var contrast = (L1 + 0.05) / (L2 + 0.05);}
-    contrast = Math.round(contrast * 10) / 10;
-    if (contrast > 10.5) {return "#000000";} else {return "#FFFFFF";}
+    var L2 = 1; // #FFF
+    var L3 = 0; // #000
+    var contrast2 = Math.round( (L2 + 0.05) / (L1 + 0.05) * 10) / 10;
+    var contrast3 = Math.round( (L1 + 0.05) / (L3 + 0.05) * 10) / 10;
+    if (contrast3 > contrast2) {return "#000000";} else {return "#FFFFFF";}
 }
 function rhslSrgbMadness(value, index, array) {
     value /= 255;
