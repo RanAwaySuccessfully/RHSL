@@ -190,8 +190,8 @@ function rhslColorPicker(element, event, isclick, coords) {
         y = y - elementPos[1];
         if (x > mainColor.clientWidth + 5) {isSide = true;}
         if (window.getSelection) {var sel = window.getSelection();} else if (document.selection) {var sel = document.selection.createRange();}
-        if (sel.rangeCount) {sel.removeAllRanges();}
-        if (sel.text > '') {document.selection.empty();}
+        if (sel && (sel.rangeCount)) {sel.removeAllRanges();}
+        if (sel && (sel.text > '')) {document.selection.empty();}
     }
     if (y < 0) {y = 0;}
     if (x < 0) {x = 0;}
@@ -219,8 +219,8 @@ function rhslColorPicker(element, event, isclick, coords) {
 function rhslGetPosition(element, noScroll) {
     element = element.getBoundingClientRect();
     if (noScroll) {
-        var xScroll = element.scrollLeft || document.documentElement.scrollLeft;
-        var yScroll = element.scrollTop || document.documentElement.scrollTop;
+        var xScroll = window.pageXOffset || document.documentElement.scrollLeft;
+        var yScroll = window.pageYOffset || document.documentElement.scrollTop;
         var x = element.left + xScroll;
         var y = element.top + yScroll;
     } else {
