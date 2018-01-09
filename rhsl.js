@@ -30,14 +30,24 @@ function rhslAddRemove(element, value, shouldRemove) {
     } catch(error) {console.error("RHSL: Error while trying to add/remove an EventListener: " + error); return;}
     if (shouldRemove) {
         element.removeEventListener("click", rhslToggle, false);
+        element.removeEventListener("input", rhslOnInput, false);
     } else {
         if (!value) {console.warn("RHSL: Color not provided. Using #FFFFFF."); value = "#FFFFFF";}
         element.addEventListener("click", rhslToggle, false);
+        element.addEventListener("input", rhslOnInput, false);
         var color = rhslColorConverter(value, true);
         rhslFineChange(element, color);
     }
 }
 
+function rhslOnInput(event) {
+    rhslToggle(event, false, true);
+    var color = rhslColorConverter(event.target.value, true, true);
+    color[0] = Math.round(color[0]);
+    color[1] = Math.round(color[1]);
+    color[2] = Math.round(color[2]);
+    rhslFineChange(event.target, color, false, true);
+}
 function rhslToggle(event, element, refresh) {
     if (!document.getElementById("rhslcolorpickercontainer")) {
         if (!element) {element = event.target;}
@@ -45,6 +55,7 @@ function rhslToggle(event, element, refresh) {
         var size;
         var align;
         var hsltype;
+        var padding;
         if (properties) {
             properties = rhslProperties(properties);
             for (var i = 0; i < properties.length; i++) {
@@ -52,19 +63,21 @@ function rhslToggle(event, element, refresh) {
                 if (properties[i][0].match(/^align$/)) {align = properties[i][1]; continue;}
                 if (properties[i][0].match(/^theme$/)) {themeCSS = properties[i][1]; continue;}
                 if (properties[i][0].match(/^hsltype$/)) {hsltype = properties[i][1]; continue;}
+                if (properties[i][0].match(/^padding$/)) {padding = properties[i][1];}
             }
         }
         if (!size) {size = [180, 150];} else {
             if (isNaN(size[0]) || size[0] < 75) {size[0] = 180;}
             if (isNaN(size[1]) || size[1] < 75) {size[1] = 150;}
         }
+        if (!padding || padding < 0) {padding = 5;}
         if (!align) {align = "left";}
         if (!hsltype) {hsltype = "normal";} // default values
         if (themeCSS === "dark") {
             themeCSS = ["border-color: #555; background: #333;", "border-color: #000;"];
         } else if (Array.isArray(themeCSS)) {
             for (var i = 0; i < 3; i++) {
-                if (!themeCSS[i]) {themeCSS[i] = "#000";}
+                if (!themeCSS[i]) {if (i === 2) {themeCSS[i] = "#000";} else {themeCSS[i] = "transparent"; continue;}}
                 themeCSS[i] = rhslColorConverter(themeCSS[i]);
                 themeCSS[i] = "rgb(" + themeCSS[i][0] + ", " + themeCSS[i][1] + ", " + themeCSS[i][2] + ")";
             }
@@ -93,13 +106,13 @@ function rhslToggle(event, element, refresh) {
         colorpicker.id = "rhslcolorpickercontainer";
         colorpicker.setAttribute("onmousemove", "rhslColorPicker(this, event);");
         colorpicker.setAttribute("onclick", "rhslColorPicker(this, event, true);");
-        colorpicker.setAttribute("style", themeCSS[0]);
+        colorpicker.setAttribute("style", themeCSS[0] + " padding: " + padding++ + "px;");
         colorpicker.innerHTML = '<div class="rhslcolorpicker" style="background: ' + bg1 + '; ' + themeCSS[1] + '">' + 
             '<div style="background: ' + bg2 + '; width: ' + size[0] + 'px; height: ' + size[1] + 'px;">' + 
                 '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAImjH8AyJ3rolFS0uouZno/D4aZQkJIiaJNaoqu14Ex3Mo1/c6bbhQAOw==" class="rhslcolorpickerselected" style="top: ' + satPos + 'px; left: ' + huePos + 'px;">' + 
             '</div>' + 
         '</div>' + 
-        '<div class="rhslcolorpickerside" style="background: ' + bg3 + '; ' + themeCSS[1] + '">' + 
+        '<div class="rhslcolorpickerside" style="background: ' + bg3 + '; ' + themeCSS[1] + ' margin-left: ' + padding + 'px;">' + 
             '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIdjI+py+0Po5yg2ouz3nmG64GUFXLmeXrqyrZuUwAAOw==" class="rhslcolorpickerselected" style="top: ' + lumPos + 'px; left: -2px;">' + 
         '</div>';
         document.body.appendChild(colorpicker);
@@ -186,9 +199,9 @@ function rhslColorPicker(element, event, isclick, coords) {
     } else {
         var x = event.clientX;
         var y = event.clientY;
+        if (x >= rhslGetPosition(sideColor)[0]) {isSide = true;}
         x = x - elementPos[0];
         y = y - elementPos[1];
-        if (x > mainColor.clientWidth + 5) {isSide = true;}
         if (window.getSelection) {var sel = window.getSelection();} else if (document.selection) {var sel = document.selection.createRange();}
         if (sel && (sel.rangeCount)) {sel.removeAllRanges();}
         if (sel && (sel.text > '')) {document.selection.empty();}
@@ -230,7 +243,7 @@ function rhslGetPosition(element, noScroll) {
     return [x, y];
 }
 
-function rhslFineChange(element, color, isLUV, forceUpdate) {
+function rhslFineChange(element, color, isLUV, ignoreValue) {
     var properties = element.getAttribute("rhslcolor");
     var updateSelf;
     var updateLinked;
@@ -245,15 +258,19 @@ function rhslFineChange(element, color, isLUV, forceUpdate) {
     if (!updateSelf) {updateSelf = ["bg-color", "hex"];}
     var textcolor = rhslContrast(rhslColorParser(color, "rgb", isLUV, true), isLUV);
     color = rhslColorParser(color, updateSelf[1], isLUV);
-    if (updateSelf[0].match(/\+text$/) || updateSelf[0] === "text") {element.innerHTML = color;}
+    if (updateSelf[0].match(/\+text$/) || updateSelf[0] === "text" && element.tagName !== ("INPUT")) {element.innerHTML = color;}
     if (updateSelf[0].match(/^bg-color(\+text)?$/)) {
         element.style.background = color; element.style.color = textcolor;
     } else if (updateSelf[0].match(/^bg-only(\+text)?$/)) {
         element.style.background = color;
     } else if (updateSelf[0].match(/^text-color(\+text)?$/)) {
         element.style.color = color;
+    } else if (updateSelf[0].match(/^border-color(\+text)?$/)) {
+        element.style.borderColor = color;
+    } else if (updateSelf[0].match(/^outline-color(\+text)?$/)) {
+        element.style.outlineColor = color;
     }
-    if (!forceUpdate) {element.value = color;}
+    if (!ignoreValue) {element.value = color;}
     if (updateLinked) {
         var currentLinked;
         if (!Array.isArray(updateLinked)) {updateLinked = [updateLinked];}
@@ -266,13 +283,17 @@ function rhslFineChange(element, color, isLUV, forceUpdate) {
                 if (!currentLinked[2]) {currentLinked[2] = "hex";}
                 textcolor = rhslContrast(rhslColorParser(color, "rgb", isLUV, true), isLUV);
                 color = rhslColorParser(color, currentLinked[2], isLUV);
-                if (currentLinked[1].match(/\+text$/) || currentLinked[1] === "text") {element.innerHTML = color;}
+                if (currentLinked[1].match(/\+text$/) || currentLinked[1] === "text" && element.tagName !== ("INPUT")) {element.innerHTML = color;}
                 if (currentLinked[1].match(/^bg-color(\+text)?$/)) {
                     element.style.background = color; element.style.color = textcolor;
                 } else if (currentLinked[1].match(/^bg-only(\+text)?$/)) {
                     element.style.background = color;
                 } else if (currentLinked[1].match(/^text-color(\+text)?$/)) {
                     element.style.color = color;
+                } else if (currentLinked[1].match(/^border-color(\+text)?$/)) {
+                    element.style.borderColor = color;
+                } else if (currentLinked[1].match(/^outline-color(\+text)?$/)) {
+                    element.style.outlineColor = color;
                 }
                 element.value = color;
             }
