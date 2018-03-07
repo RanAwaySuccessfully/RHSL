@@ -38,6 +38,7 @@ function rhslAddRemove(element, value, shouldRemove) {
         var color = rhslColorConverter(value, true);
         rhslFineChange(element, color);
     }
+    if (shouldRemove === "refresh") {rhslAddRemove(element, value);}
 }
 
 function rhslOnInput(event) {
@@ -56,6 +57,7 @@ function rhslToggle(event, element, refresh) {
         var align;
         var hsltype;
         var padding;
+        var inputs;
         if (properties) {
             properties = rhslProperties(properties);
             for (var i = 0; i < properties.length; i++) {
@@ -63,27 +65,28 @@ function rhslToggle(event, element, refresh) {
                 if (properties[i][0].match(/^align$/)) {align = properties[i][1]; continue;}
                 if (properties[i][0].match(/^theme$/)) {themeCSS = properties[i][1]; continue;}
                 if (properties[i][0].match(/^hsltype$/)) {hsltype = properties[i][1]; continue;}
-                if (properties[i][0].match(/^padding$/)) {padding = properties[i][1];}
+                if (properties[i][0].match(/^padding$/)) {padding = properties[i][1]; continue;}
+                if (properties[i][0].match(/^inputs$/)) {inputs = properties[i][1];}
             }
         }
-        if (!size) {size = [180, 150];} else {
+        if (!size || !Array.isArray(size)) {size = [180, 150];} else {
             if (isNaN(size[0]) || size[0] < 75) {size[0] = 180;}
             if (isNaN(size[1]) || size[1] < 75) {size[1] = 150;}
         }
-        if (!padding || padding < 0) {padding = 5;}
+        if (!padding || padding < 0) {padding = 7;}
         if (!align) {align = "left";}
         if (!hsltype) {hsltype = "normal";} // default values
         if (themeCSS === "dark") {
-            themeCSS = ["border-color: #555; background: #333;", "border-color: #000;"];
+            themeCSS = ["border-color: #555; background: #333;", "border-color: #000;", "border-color: #000; background: #111; color: #FFF;"];
         } else if (Array.isArray(themeCSS)) {
-            for (var i = 0; i < 3; i++) {
-                if (!themeCSS[i]) {if (i === 2) {themeCSS[i] = "#000";} else {themeCSS[i] = "transparent"; continue;}}
+            for (var i = 0; i < 4; i++) {
+                if (!themeCSS[i]) {if (i === 2) {themeCSS[i] = "#000";} else if (i === 3) {themeCSS[i] = "#FFF";} else {themeCSS[i] = "transparent"; continue;}}
                 themeCSS[i] = rhslColorConverter(themeCSS[i]);
                 themeCSS[i] = "rgb(" + themeCSS[i][0] + ", " + themeCSS[i][1] + ", " + themeCSS[i][2] + ")";
             }
-            themeCSS = ["border-color: " + themeCSS[0] + "; background: " + themeCSS[1] + ";", "border-color: " + themeCSS[2] + ";"];
+            themeCSS = ["border-color: " + themeCSS[0] + "; background: " + themeCSS[1] + ";", "border-color: " + themeCSS[2] + ";", "border-color: " + themeCSS[2] + "; background: " + themeCSS[3] + "; color:" + rhslContrast(rhslColorConverter(themeCSS[3])) + ";"];
         } else {
-            var themeCSS = ["border-color: #AAA; background: #DDD;", "border-color: #555;"];
+            var themeCSS = ["border-color: #AAA; background: #DDD;", "border-color: #555;", "border-color: #555; background: #EEE; color: #000;"];
         }
         if (hsltype === "luv" && window.hsluv) {
             var hslvalue = rhslColorConverter(element.value);
@@ -102,19 +105,28 @@ function rhslToggle(event, element, refresh) {
         var huePos = Math.round(((hslvalue[0] / 360) * size[0]) - 10);
         var satPos = Math.round(((size[1] - 1) - (hslvalue[1] / 100) * (size[1] - 1)) - 10);
         var lumPos = Math.round((size[1] - (hslvalue[2] / 100) * size[1]) - 10);
+        if (inputs === "true") {if (size[0] >= 140) {var inputscenter = " justify-content: center;";} else {var inputscenter = "";}
+            inputs = '<style>.rhslcolorinputs input, .rhslcolorinputs button {' + themeCSS[2] + '}</style>' + 
+            '<div class="rhslcolorinputs" style="margin: ' + padding++ + 'px; margin-top: 0; width: ' + (Number(size[0]) + 23 + Number(padding)) + 'px;' + inputscenter + '">' + 
+                '<input type="number" class="rhslcolorinput" oninput="rhslColorPicker(this.parentElement.parentElement.children[0], false, true, [this.value,,], true)" min="0" max="360" value="' + Math.round(hslvalue[0]) + '">' + 
+                '<input type="number" class="rhslcolorinput" oninput="rhslColorPicker(this.parentElement.parentElement.children[0], false, true, [,this.value,], true)" min="0" max="100" value="' + Math.round(hslvalue[1]) + '">' + 
+                '<input type="number" class="rhslcolorinput" oninput="rhslColorPicker(this.parentElement.parentElement.children[0], false, true, [,,this.value], true)" min="0" max="100" value="' + Math.round(hslvalue[2]) + '">' + 
+                '<button type="button" onclick="rhslToggle(false, this.parentElement.parentElement);">X</button>' +
+            '</div>';
+        } else {inputs = "";}
         var colorpicker = document.createElement("div");
         colorpicker.id = "rhslcolorpickercontainer";
-        colorpicker.setAttribute("onmousemove", "rhslColorPicker(this, event);");
-        colorpicker.setAttribute("onclick", "rhslColorPicker(this, event, true);");
-        colorpicker.setAttribute("style", themeCSS[0] + " padding: " + padding++ + "px;");
-        colorpicker.innerHTML = '<div class="rhslcolorpicker" style="background: ' + bg1 + '; ' + themeCSS[1] + '">' + 
-            '<div style="background: ' + bg2 + '; width: ' + size[0] + 'px; height: ' + size[1] + 'px;">' + 
-                '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAImjH8AyJ3rolFS0uouZno/D4aZQkJIiaJNaoqu14Ex3Mo1/c6bbhQAOw==" class="rhslcolorpickerselected" style="top: ' + satPos + 'px; left: ' + huePos + 'px;">' + 
+        colorpicker.setAttribute("style", themeCSS[0]);
+        colorpicker.innerHTML = '<div class="rhslcolormousearea" onmousemove="rhslColorPicker(this, event);" onclick="rhslColorPicker(this, event, true);" style="padding: ' + padding++ + 'px;">' + 
+            '<div class="rhslcolorpicker" style="background: ' + bg1 + '; ' + themeCSS[1] + '">' + 
+                '<div style="background: ' + bg2 + '; width: ' + size[0] + 'px; height: ' + size[1] + 'px;">' + 
+                    '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAImjH8AyJ3rolFS0uouZno/D4aZQkJIiaJNaoqu14Ex3Mo1/c6bbhQAOw==" class="rhslcolorpickerselected" style="top: ' + satPos + 'px; left: ' + huePos + 'px;">' + 
+                '</div>' + 
             '</div>' + 
-        '</div>' + 
-        '<div class="rhslcolorpickerside" style="background: ' + bg3 + '; ' + themeCSS[1] + ' margin-left: ' + padding + 'px;">' + 
-            '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIdjI+py+0Po5yg2ouz3nmG64GUFXLmeXrqyrZuUwAAOw==" class="rhslcolorpickerselected" style="top: ' + lumPos + 'px; left: -2px;">' + 
-        '</div>';
+            '<div class="rhslcolorpickerside" style="background: ' + bg3 + '; ' + themeCSS[1] + ' margin-left: ' + padding + 'px;">' + 
+                '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIdjI+py+0Po5yg2ouz3nmG64GUFXLmeXrqyrZuUwAAOw==" class="rhslcolorpickerselected" style="top: ' + lumPos + 'px; left: -2px;">' + 
+            '</div>' + 
+        '</div>' + inputs;
         document.body.appendChild(colorpicker);
         document.body.addEventListener("mousedown", rhslHideColorPicker, true);
         rhslCurrentElement(element);
@@ -185,49 +197,64 @@ function isChildOf(child, parent) {
     } else {return isChildOf(child.parentNode, parent);}
 }
 
-function rhslColorPicker(element, event, isclick, coords) {
+function rhslColorPicker(element, event, isclick, hsl, ignoreUpdate) {
     if ((!event.which || !event.buttons) && !isclick) {return;}
-    var isSide = false;
     var mainColor = element.children[0];
     var sideColor = element.children[1];
     var elementPos = rhslGetPosition(mainColor);
-    if (coords) {
-        var x = coords[0];
-        if (!x && (x !== 0)) {isSide = true;}
-        x = Math.round(x / 360 * mainColor.clientWidth);
-        var y = Math.round(coords[1] / 100 * mainColor.clientHeight);
+    if (hsl) {
+        var x = Math.round(hsl[0] / 360 * mainColor.clientWidth);
+        var y = Math.round((100 - hsl[1]) / 100 * mainColor.clientHeight);
+        var y2 = Math.round((100 - hsl[2]) / 100 * sideColor.clientHeight);
     } else {
         var x = event.clientX;
         var y = event.clientY;
-        if (x >= rhslGetPosition(sideColor)[0]) {isSide = true;}
-        x = x - elementPos[0];
-        y = y - elementPos[1];
+        if (x >= rhslGetPosition(sideColor)[0]) {
+            var y2 = y - elementPos[1];
+            x = false;
+            y = false;
+        } else {
+            var y2 = false;
+            x = x - elementPos[0];
+            y = y - elementPos[1];
+        }
         if (window.getSelection) {var sel = window.getSelection();} else if (document.selection) {var sel = document.selection.createRange();}
         if (sel && (sel.rangeCount)) {sel.removeAllRanges();}
         if (sel && (sel.text > '')) {document.selection.empty();}
     }
-    if (y < 0) {y = 0;}
-    if (x < 0) {x = 0;}
-    if (x > mainColor.clientWidth && !isSide) {x = mainColor.clientWidth;}
-    if (y > mainColor.clientHeight) {y = mainColor.clientHeight;}
     var input = rhslCurrentElement();
     if (input.getAttribute("rhslcolor").match(/hsltype: ?luv;/) && window.hsluv) {var isLUV = true;} else {var isLUV = false;}
-    if (isSide) {
-        sideColor.firstElementChild.style.top = y - 10 + "px";
-        var hue = Math.round((Number(mainColor.children[0].firstElementChild.style.left.match(/-?\d+/)) + 10) / mainColor.clientWidth * 360);
-        var sat = Math.round(Math.abs(Number(mainColor.children[0].firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);
-        var lum = Math.round(((mainColor.clientHeight - y) / mainColor.clientHeight) * 100);
-    } else {
+    if (x || x === 0) {
+        if (x < 0) {x = 0;}
+        if (x > mainColor.clientWidth) {x = mainColor.clientWidth;}
         mainColor.children[0].firstElementChild.style.left = x - 10 + "px";
-        mainColor.children[0].firstElementChild.style.top = y - 10 + "px";
         var hue = Math.round((x / mainColor.clientWidth) * 360);
+    } else {var hue = Math.round((Number(mainColor.children[0].firstElementChild.style.left.match(/-?\d+/)) + 10) / mainColor.clientWidth * 360);}
+    if (y || y === 0) {
+        if (y < 0) {y = 0;}
+        if (y > mainColor.clientHeight) {y = mainColor.clientHeight;}
+        mainColor.children[0].firstElementChild.style.top = y - 10 + "px";
         var sat = Math.round(((mainColor.clientHeight - y) / mainColor.clientHeight) * 100);
-        var lum = Math.round(Math.abs(Number(sideColor.firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);
-        if (isLUV) {
-            sideColor.style.background = "linear-gradient(#FFFFFF, " + window.hsluv.hsluvToHex([hue, sat, 90]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 80]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 70]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 60]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 50]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 40]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 30]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 20]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 10]) + ", #000000)";
-        } else {sideColor.style.background = "linear-gradient(hsl(" + hue + ", " + sat +"%, 100%), hsl(" + hue + ", " + sat +"%, 50%), hsl(" + hue + ", " + sat +"%, 0%))";}
+    } else {var sat = Math.round(Math.abs(Number(mainColor.children[0].firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);}
+    if (y2 || y2 === 0) {
+        if (y2 < 0) {y2 = 0;}
+        if (y2 > sideColor.clientHeight) {y2 = sideColor.clientHeight;}
+        sideColor.firstElementChild.style.top = y2 - 10 + "px";
+        var lum = Math.round(((mainColor.clientHeight - y2) / mainColor.clientHeight) * 100);
+    } else {var lum = Math.round(Math.abs(Number(sideColor.firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);}
+    if (isLUV) {
+        sideColor.style.background = "linear-gradient(#FFFFFF, " + window.hsluv.hsluvToHex([hue, sat, 90]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 80]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 70]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 60]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 50]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 40]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 30]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 20]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 10]) + ", #000000)";
+    } else {sideColor.style.background = "linear-gradient(hsl(" + hue + ", " + sat +"%, 100%), hsl(" + hue + ", " + sat +"%, 50%), hsl(" + hue + ", " + sat +"%, 0%))";}
+    if (input.getAttribute("rhslcolor").match(/inputs: ?true;/) && !ignoreUpdate) {
+        hsl = [hue, sat, lum];
+        var butwaittheresmore = document.getElementsByClassName("rhslcolorinput");
+        for (var i = 0; i < butwaittheresmore.length; i++) {
+            butwaittheresmore[i].value = hsl[i];
+        }
     }
     rhslFineChange(input, [hue, sat, lum], isLUV);
+    if (input.hasAttribute("oninput")) {input.oninput();}
+    if (isclick && input.hasAttribute("onchange")) {input.onchange();}
 }
 function rhslGetPosition(element, noScroll) {
     element = element.getBoundingClientRect();
