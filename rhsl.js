@@ -104,7 +104,7 @@ function rhslToggle(event, element, refresh) {
         }
         var huePos = Math.round(((hslvalue[0] / 360) * size[0]) - 10);
         var satPos = Math.round(((size[1] - 1) - (hslvalue[1] / 100) * (size[1] - 1)) - 10);
-        var lumPos = Math.round((size[1] - (hslvalue[2] / 100) * size[1]) - 10);
+        var ligPos = Math.round((size[1] - (hslvalue[2] / 100) * size[1]) - 10);
         if (inputs === "true") {if (size[0] >= 140) {var inputscenter = " justify-content: center;";} else {var inputscenter = "";}
             inputs = '<style>.rhslcolorinputs input, .rhslcolorinputs button {' + themeCSS[2] + '}</style>' + 
             '<div class="rhslcolorinputs" style="margin: ' + padding++ + 'px; margin-top: 0; width: ' + (Number(size[0]) + 23 + Number(padding)) + 'px;' + inputscenter + '">' + 
@@ -124,16 +124,18 @@ function rhslToggle(event, element, refresh) {
                 '</div>' + 
             '</div>' + 
             '<div class="rhslcolorpickerside" style="background: ' + bg3 + '; ' + themeCSS[1] + ' margin-left: ' + padding + 'px;">' + 
-                '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIdjI+py+0Po5yg2ouz3nmG64GUFXLmeXrqyrZuUwAAOw==" class="rhslcolorpickerselected" style="top: ' + lumPos + 'px; left: -2px;">' + 
+                '<img src="data:image/gif;base64,R0lGODlhFAAUAIABAAAAAP///yH5BAEKAAEALAAAAAAUABQAAAIdjI+py+0Po5yg2ouz3nmG64GUFXLmeXrqyrZuUwAAOw==" class="rhslcolorpickerselected" style="top: ' + ligPos + 'px; left: -2px;">' + 
             '</div>' + 
         '</div>' + inputs;
         document.body.appendChild(colorpicker);
         document.body.addEventListener("mousedown", rhslHideColorPicker, true);
+        window.addEventListener("resize", rhslWindowResize, true);
         rhslCurrentElement(element);
         rhslAlignElement(colorpicker, element, align);
     } else {
         document.body.removeChild(document.getElementById("rhslcolorpickercontainer"));
         document.body.removeEventListener("mousedown", rhslHideColorPicker, true);
+        window.removeEventListener("resize", rhslWindowResize, true);
         rhslCurrentElement(false);
     }
     if (refresh) {rhslToggle(event, element);}
@@ -158,6 +160,13 @@ function rhslProperties(properties, lookFor) {
         }
     }
     return properties;
+}
+function rhslWindowResize() {
+    var colorpicker = document.getElementById("rhslcolorpickercontainer");
+    var element = rhslCurrentElement();
+    var align = element.getAttribute("rhslcolor");
+    if (align) {align = rhslProperties(align, "align");} else {align = "left";}
+    rhslAlignElement(colorpicker, element, align);
 }
 function rhslAlignElement(colorpicker, element, align, attempt) {
     var position = rhslGetPosition(element, true);
@@ -222,8 +231,6 @@ function rhslColorPicker(element, event, isclick, hsl, ignoreUpdate) {
         if (sel && (sel.rangeCount)) {sel.removeAllRanges();}
         if (sel && (sel.text > '')) {document.selection.empty();}
     }
-    var input = rhslCurrentElement();
-    if (input.getAttribute("rhslcolor").match(/hsltype: ?luv;/) && window.hsluv) {var isLUV = true;} else {var isLUV = false;}
     if (x || x === 0) {
         if (x < 0) {x = 0;}
         if (x > mainColor.clientWidth) {x = mainColor.clientWidth;}
@@ -240,19 +247,21 @@ function rhslColorPicker(element, event, isclick, hsl, ignoreUpdate) {
         if (y2 < 0) {y2 = 0;}
         if (y2 > sideColor.clientHeight) {y2 = sideColor.clientHeight;}
         sideColor.firstElementChild.style.top = y2 - 10 + "px";
-        var lum = Math.round(((mainColor.clientHeight - y2) / mainColor.clientHeight) * 100);
-    } else {var lum = Math.round(Math.abs(Number(sideColor.firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);}
+        var lig = Math.round(((mainColor.clientHeight - y2) / mainColor.clientHeight) * 100);
+    } else {var lig = Math.round(Math.abs(Number(sideColor.firstElementChild.style.top.match(/-?\d+/)) + 10 - mainColor.clientHeight) / mainColor.clientHeight * 100);}
+    var input = rhslCurrentElement();
+    if (input.getAttribute("rhslcolor").match(/hsltype: ?luv;/) && window.hsluv) {var isLUV = true;} else {var isLUV = false;}
     if (isLUV) {
         sideColor.style.background = "linear-gradient(#FFFFFF, " + window.hsluv.hsluvToHex([hue, sat, 90]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 80]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 70]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 60]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 50]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 40]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 30]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 20]) + ', ' + window.hsluv.hsluvToHex([hue, sat, 10]) + ", #000000)";
     } else {sideColor.style.background = "linear-gradient(hsl(" + hue + ", " + sat +"%, 100%), hsl(" + hue + ", " + sat +"%, 50%), hsl(" + hue + ", " + sat +"%, 0%))";}
     if (input.getAttribute("rhslcolor").match(/inputs: ?true;/) && !ignoreUpdate) {
-        hsl = [hue, sat, lum];
+        hsl = [hue, sat, lig];
         var butwaittheresmore = document.getElementsByClassName("rhslcolorinput");
         for (var i = 0; i < butwaittheresmore.length; i++) {
             butwaittheresmore[i].value = hsl[i];
         }
     }
-    rhslFineChange(input, [hue, sat, lum], isLUV);
+    rhslFineChange(input, [hue, sat, lig], isLUV);
     if (input.hasAttribute("oninput")) {input.oninput();}
     if (isclick && input.hasAttribute("onchange")) {input.onchange();}
 }
@@ -308,7 +317,7 @@ function rhslFineChange(element, color, isLUV, ignoreValue) {
                 element = document.getElementById(currentLinked[0]);
                 if (!currentLinked[1]) {currentLinked[1] = "bg+text";}
                 if (!currentLinked[2]) {currentLinked[2] = "hex";}
-                textcolor = rhslContrast(rhslColorParser(color, "rgb", isLUV, true), isLUV);
+                textcolor = rhslContrast(rhslColorParser(color, "rgb", isLUV, true));
                 color = rhslColorParser(color, currentLinked[2], isLUV);
                 if (currentLinked[1].match(/\+text$/) || currentLinked[1] === "text" && element.tagName !== ("INPUT")) {element.innerHTML = color;}
                 if (currentLinked[1].match(/^bg-color(\+text)?$/)) {
@@ -417,7 +426,7 @@ function rhslColorParser(color, changeTo, isLUV, toArray) {
     }
     return color;
 }
-function rhslContrast(bgColor, isLUV) {
+function rhslContrast(bgColor) {
     bgColor.forEach(rhslSrgbMadness);
     var L1 = (0.2126 * bgColor[0]) + (0.7152 * bgColor[1]) + (0.0722 * bgColor[2]);
     var L2 = 1; // #FFF
