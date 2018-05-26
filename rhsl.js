@@ -58,6 +58,7 @@ function rhslToggle(event, element, refresh) {
         var hsltype;
         var padding;
         var inputs;
+        var addclass;
         if (properties) {
             properties = rhslProperties(properties);
             for (var i = 0; i < properties.length; i++) {
@@ -66,7 +67,8 @@ function rhslToggle(event, element, refresh) {
                 if (properties[i][0].match(/^theme$/)) {themeCSS = properties[i][1]; continue;}
                 if (properties[i][0].match(/^hsltype$/)) {hsltype = properties[i][1]; continue;}
                 if (properties[i][0].match(/^padding$/)) {padding = properties[i][1]; continue;}
-                if (properties[i][0].match(/^inputs$/)) {inputs = properties[i][1];}
+                if (properties[i][0].match(/^inputs$/)) {inputs = properties[i][1]; continue;}
+                if (properties[i][0].match(/^addclass$/)) {addclass = properties[i][1];}
             }
         }
         if (!size || !Array.isArray(size)) {size = [180, 150];} else {
@@ -117,6 +119,7 @@ function rhslToggle(event, element, refresh) {
         var colorpicker = document.createElement("div");
         colorpicker.id = "rhslcolorpickercontainer";
         colorpicker.setAttribute("style", themeCSS[0]);
+        if (addclass) {colorpicker.setAttribute("class", addclass);}
         colorpicker.innerHTML = '<div class="rhslcolormousearea" onmousemove="rhslColorPicker(this, event);" onclick="rhslColorPicker(this, event, true);" style="padding: ' + padding++ + 'px;">' + 
             '<div class="rhslcolorpicker" style="background: ' + bg1 + '; ' + themeCSS[1] + '">' + 
                 '<div style="background: ' + bg2 + '; width: ' + size[0] + 'px; height: ' + size[1] + 'px;">' + 
