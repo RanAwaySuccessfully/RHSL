@@ -105,7 +105,7 @@ var RHSL = {
                     '<input type="number" class="rhslcolorinput" oninput="RHSL.colorPicker(this.parentElement.parentElement.children[0], false, true, [this.value,,], true)" min="0" max="360" value="' + Math.round(hslvalue[0]) + '">' + 
                     '<input type="number" class="rhslcolorinput" oninput="RHSL.colorPicker(this.parentElement.parentElement.children[0], false, true, [,this.value,], true)" min="0" max="100" value="' + Math.round(hslvalue[1]) + '">' + 
                     '<input type="number" class="rhslcolorinput" oninput="RHSL.colorPicker(this.parentElement.parentElement.children[0], false, true, [,,this.value], true)" min="0" max="100" value="' + Math.round(hslvalue[2]) + '">' + 
-                    '<button type="button" onclick="rhslToggle(false, this.parentElement.parentElement);">X</button>' +
+                    '<button type="button" onclick="RHSL.toggle(false, this.parentElement.parentElement);">X</button>' +
                 '</div>';
             } else {inputs = "";}
             var colorpicker = document.createElement("div");
