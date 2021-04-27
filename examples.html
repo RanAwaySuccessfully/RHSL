@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>RHSL - Examples</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="icon" type="image/png" href="images/site_square.png">
+  <link rel="stylesheet" href="css.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lato:400,400i,700,700i">
+  <script src="hsluv.min.js" async></script>
+  <script src="rhsl.js" defer></script>
+  <script defer>
+    function updateThisCode(element) {
+      var value = element.value;
+      value = value.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\n/g, "<br>");
+      if (value.match(/<script[^>]*>.*<\/script>/i)) {
+        value = value.split(/</g);
+        var newvalue = "";
+        for (var i = 0; i < value.length; i++) {
+          if (i > 0) {value[i] = "<" + value[i];}
+          if (value[i].match(/^<script[^>]*>/i)) {value[i] = value[i].replace(/'/g, '"');}
+          newvalue += value[i];
+        }
+        value = newvalue;
+        value = value.replace(/<script(?=[^>]*>)/ig, '<iframe srcdoc=\'<script');
+        value = value.replace(/<\/script>(<br>)?/ig, '<\/script>\' height="0" width="0" style="display: none;"><\/iframe>');
+      } //handling <script> tags
+      element.parentNode.parentNode.nextElementSibling.innerHTML = value;
+      var elementList = document.querySelectorAll("[rhslcolor]");
+      for (var i = 0; i < elementList.length; i++) {
+        if (!isChildOf(elementList[i], element.parentNode.parentNode.parentNode)) {continue;}
+        rhslAddRemove(elementList[i], elementList[i].value);
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <header>
+    <a href="index"><img src="images/site_logo.png" width="240" height="100" alt="RHSL Logo"></a><br>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index">Main Page</a></li>
+      <li><a href="examples" class="active">Examples</a></li>
+      <li><a href="docs">Documentation</a></li>
+    </ul>
+  </nav>
+
+  <section>
+    <p>Below are some examples of what you can customize in RHSL. If you need more information, please check the <a href="docs">documentation.</a></p>
+    
+    <p><strong>NOTE:</strong> If you're using &lt;script&gt; tags, please note that this specific page will convert all single quotation marks inside them (ex. 'string') to double (ex. "string") before rendering them. This does not apply to empty script tags which use the <inline-code>src</inline-code> attribute.</p><br>
+    
+    <h3>Changing the color picker's size</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><input value="#4C65AE" rhslcolor="size: 90, 75;">
+<input value="#4C65AE" rhslcolor="size: 360, 200;">
+<input value="#4C65AE" rhslcolor="padding: 10;"></textarea></code></pre>
+    
+      <div>
+        <input value="#4C65AE" rhslcolor="size: 90, 75;"><br>
+        <input value="#4C65AE" rhslcolor="size: 360, 200;"><br>
+        <input value="#4C65AE" rhslcolor="padding: 10;">
+      </div>
+      
+    </div>
+    
+    <h3>Using different themes</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><input value="#4CAEAE" rhslcolor="theme: dark;">
+<input value="#4CAEAE" rhslcolor="theme: #374828, #525D38, #253518, #111711;">
+<input value="#4CAEAE" rhslcolor="theme: ,;"></textarea></code></pre>
+    
+      <div>
+        <input value="#4CAEAE" rhslcolor="theme: dark;"><br>
+        <input value="#4CAEAE" rhslcolor="theme: #374828, #525D38, #253518, #111711;"><br>
+        <input value="#4CAEAE" rhslcolor="theme: ,;">
+      </div>
+      
+    </div>
+    
+    <h3>Positioning it differently</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><input value="hsl(120, 50%, 50%)" rhslcolor="align: left;">
+<input value="hsl(240, 50%, 50%)" rhslcolor="align: right;">
+<input value="hsl(180, 50%, 50%)" rhslcolor="align: center;"></textarea></code></pre>
+    
+      <div>
+        <input value="hsl(120, 50%, 50%)" rhslcolor="align: left;"><br>
+        <input value="hsl(240, 50%, 50%)" rhslcolor="align: right;"><br>
+        <input value="hsl(180, 50%, 50%)" rhslcolor="align: center;">
+      </div>
+      
+    </div>
+    
+    <h3>Using HSL<sub>uv</sub></h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><input value="rgb(0, 255, 255)" rhslcolor>
+
+<input value="rgb(0, 255, 255)" rhslcolor="hsltype: luv;"></textarea></code></pre>
+    
+      <div>
+        <input value="rgb(0, 255, 255)" rhslcolor><br>
+        <br>
+        <input value="rgb(0, 255, 255)" rhslcolor="hsltype: luv;">
+      </div>
+      
+    </div>
+    
+    <h3>Using custom classes</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><style>.customborder {border: 2px outset #777 !important;}</style>
+<input value="#333" rhslcolor>
+
+<input value="#333" rhslcolor="addclass: customborder;"></textarea></code></pre>
+    
+      <div>
+        <style>.customborder {border: 2px outset #777 !important;}</style><br>
+        <input value="#333" rhslcolor><br>
+        <br>
+        <input value="#333" rhslcolor="addclass: customborder;">
+      </div>
+      
+    </div>
+    
+    <h3>Displaying more options</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="6"><input value="#E6E6FA" rhslcolor>
+
+<input value="#E6E6FA" rhslcolor="inputs: true;"></textarea></code></pre>
+    
+      <div>
+        <input value="#E6E6FA" rhslcolor><br>
+        <br>
+        <input value="#E6E6FA" rhslcolor="inputs: true;">
+      </div>
+      
+    </div>
+    
+    <h3>Using different color formats</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="9"><input value="#7DAE4C" rhslcolor="update-self: bg-color, hex;">
+<input value="#7DAE4C" rhslcolor="update-self: bg-color, rgb;">
+<input value="#7DAE4C" rhslcolor="update-self: bg-color, hsl;">
+
+<input value="#AE4C4C" rhslcolor>
+<input value="rgb(174, 76, 76)" rhslcolor>
+<input value="hsl(0, 39%, 49%)" rhslcolor></textarea></code></pre>
+    
+      <div>
+        <input value="#7DAE4C" rhslcolor="update-self: bg-color, hex;"><br>
+        <input value="#7DAE4C" rhslcolor="update-self: bg-color, rgb;"><br>
+        <input value="#7DAE4C" rhslcolor="update-self: bg-color, hsl;"><br>
+        <br>
+        <input value="#AE4C4C" rhslcolor><br>
+        <input value="rgb(174, 76, 76)" rhslcolor><br>
+        <input value="hsl(0, 39%, 49%)" rhslcolor>
+      </div>
+      
+    </div>
+    
+    <h3>Changing how an element updates</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="15"><button value="#AEAE4C" rhslcolor="update-self: none, hex;">Sample text</button>
+<button value="#AEAE4C" rhslcolor="update-self: bg-color, hex;">Sample text</button>
+<button value="#AEAE4C" rhslcolor="update-self: bg-only, hex;">Sample text</button>
+<button value="#AEAE4C" rhslcolor="update-self: text-color, hex;">Sample text</button>
+
+<button value="#AEAE4C" rhslcolor="update-self: text, hex;"></button>
+<button value="#AEAE4C" rhslcolor="update-self: bg-color+text, hex;"></button>
+<button value="#AEAE4C" rhslcolor="update-self: bg-only+text, hex;"></button>
+<button value="#AEAE4C" rhslcolor="update-self: text-color+text, hex;"></button></textarea></code></pre>
+    
+      <div>
+        <button value="#AEAE4C" rhslcolor="update-self: none, hex;">Sample text</button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: bg-color, hex;">Sample text</button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: bg-only, hex;">Sample text</button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: text-color, hex;">Sample text</button><br>
+        <br>
+        <button value="#AEAE4C" rhslcolor="update-self: text, hex;"></button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: bg-color+text, hex;"></button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: bg-only+text, hex;"></button><br>
+        <button value="#AEAE4C" rhslcolor="update-self: text-color+text, hex;"></button><br>
+      </div>
+      
+    </div>
+    
+    <h3>Changing how an &lt;input&gt; element updates</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="9"><input value="#AEAE4C" rhslcolor="update-self: none, hex;">
+<input value="#AEAE4C" rhslcolor="update-self: bg-color, hex;">
+<input value="#AEAE4C" rhslcolor="update-self: bg-only, hex;">
+<input value="#AEAE4C" rhslcolor="update-self: text-color, hex;">
+
+NOTE: input elements will always have their text updated, so adding "+text" makes no difference.</textarea></code></pre>
+    
+      <div>
+        <input value="#AEAE4C" rhslcolor="update-self: none, hex;"><br>
+        <input value="#AEAE4C" rhslcolor="update-self: bg-color, hex;"><br>
+        <input value="#AEAE4C" rhslcolor="update-self: bg-only, hex;"><br>
+        <input value="#AEAE4C" rhslcolor="update-self: text-color, hex;"><br>
+        <br>
+        NOTE: input elements will always have their text updated, so adding "+text" makes no difference.
+      </div>
+      
+    </div>
+    
+    <h3>Updating other elements</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="9"><div id="updateDiv">This is a div.</div>
+<span id="updateSpan">This is a span.</span>
+
+<input value="#AE7D4C" rhslcolor="update-self: text, hex; update-linked: (updateDiv bg-color hex);">
+<button value="#AE4CAE" rhslcolor="update-self: bg-color, hex; update-linked: (updateSpan text hex);"></button></textarea></code></pre>
+    
+      <div>
+        <div id="updateDiv">This is a div.</div><br>
+        <span id="updateSpan">This is a span.</span><br>
+        <br>
+        <input value="#AE7D4C" rhslcolor="update-self: text, hex; update-linked: (updateDiv bg-color hex);"><br>
+        <button value="#AE4CAE" rhslcolor="update-self: bg-color, hex; update-linked: (updateSpan text hex);"></button>
+      </div>
+      
+    </div>
+    
+    <h3>Using onchange and oninput</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="8"><script>function updateColor(color) {document.getElementById("updateElement").style.background = color;}</script>
+onchange: <input value="#49B" onchange="updateColor(this.value);" rhslcolor>
+oninput: <input value="#990" oninput="updateColor(this.value);" rhslcolor>
+
+<div id="updateElement" style="height: 50px; width: 50px;"></div></textarea></code></pre>
+    
+      <div>
+        <script>function updateColor(color) {document.getElementById("updateElement").style.background = color;}</script>
+        onchange: <input value="#49B" onchange="updateColor(this.value);" rhslcolor><br>
+        oninput: <input value="#990" oninput="updateColor(this.value);" rhslcolor><br>
+        <br>
+        <div id="updateElement" style="height: 50px; width: 50px;"></div>
+      </div>
+      
+    </div>
+    
+    <h3>Using it on forms</h3>
+  
+    <div class="htmlexample">
+    
+      <pre><code><textarea oninput="updateThisCode(this);" rows="12"><form action="https://www.w3schools.com/action_page.php">
+<input name="color1" value="#654CAE" rhslcolor="update-self: bg-color, hex;"> (color1)
+<input name="color2" type="hidden" id="hiddenInput" autocomplete="off">
+<button type="button" value="#654CAE" rhslcolor="update-self: bg-color, rgb; update-linked: (hiddenInput bg-color+text rgb);">Pick a color</button> (color2)
+
+<button>Submit</button>
+</form></textarea></code></pre>
+    
+      <div>
+        <form action="https://www.w3schools.com/action_page.php" target="_blank"><br>
+          <input name="color1" value="#654CAE" rhslcolor="update-self: bg-color, hex;"> (color1)<br>
+          <input name="color2" type="hidden" id="hiddenInput" autocomplete="off"><br>
+          <button type="button" value="#654CAE" rhslcolor="update-self: bg-color, rgb; update-linked: (hiddenInput bg-color+text rgb);">Pick a color</button> (color2)<br>
+          <br>
+          <button>Submit</button><br>
+        </form>
+      </div>
+      
+    </div>
+
+  </section>
+
+  <footer>© 2018-2021 - RanAwaySuccessfully</footer>
+
+</body>
+</html>

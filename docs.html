@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>RHSL - Documentation</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="icon" type="image/png" href="images/site_square.png">
+  <link rel="stylesheet" href="css.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lato:400,400i,700,700i">
+</head>
+<body>
+
+  <header>
+    <a href="index"><img src="images/site_logo.png" width="240" height="100" alt="RHSL Logo"></a><br>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index">Main Page</a></li>
+      <li><a href="examples">Examples</a></li>
+      <li><a href="docs" class="active">Documentation</a></li>
+    </ul>
+  </nav>
+
+  <section>
+    
+    <h3>Supported Browsers</h3>
+    <ul>
+      <li>Internet Explorer (10/11)</li>
+      <li>Microsoft Edge</li>
+      <li>Mozilla Firefox</li>
+      <li>Google Chrome and other Chromium-based browsers (Opera, Vivaldi, etc.)</li>
+      <li>Opera Mini*</li>
+    </ul><br>
+    
+    <p><small><em>*Opera Mini on Extreme/Mini Mode is only partially supported.</em></small></p>
+    
+    <h3>Supported Properties</h3>
+    
+    <p>These are all properties you can put inside the rhslcolor attribute. They are formatted just like CSS: <inline-code>rhslcolor="align: right; update-self: text-color, hex;"</inline-code></p>
+    
+    <ul>
+      <li><strong>size</strong></li>
+      <li><strong>Values:</strong> width, height</li>
+      <li><strong>Example:</strong> <inline-code>size: 360, 200;</inline-code></li>
+      <li><strong>Description:</strong> Changes the size of the color picker, in pixels. Neither value can go below 75. The comma is required. If either side of the comma is left empty, it'll use the default value for that field, which are 180px of width and 100px of height.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>padding</strong></li>
+      <li><strong>Values:</strong> padding</li>
+      <li><strong>Example:</strong> <inline-code>padding: 10;</inline-code></li>
+      <li><strong>Description:</strong> Changes the padding of the color picker, in pixels. Must not be a negative number. Default is 7px.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>align</strong></li>
+      <li><strong>Values:</strong> left / center / right</li>
+      <li><strong>Example:</strong> <inline-code>align: center;</inline-code></li>
+      <li><strong>Description:</strong> Makes the color picker align to an element's center or left/right borders. Note that the color picker will try not to align itself in a way that would make it render off-screen. Default value is "left".</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>theme</strong></li>
+      <li><strong>Values:</strong> light / dark / color1, color2, color3, color4</li>
+      <li><strong>Example:</strong> <inline-code>theme: dark;</inline-code> or <inline-code>theme: #374828, #525D38, #253518, #111711;</inline-code></li>
+      <li><strong>Description:</strong> Customizes the color picker's theme. If using a custom theme, the colors will define the outer border's color, the background's color, the inner borders' color and the inputs' background color, respectively. A valid color (Hexadecimal, RGB or HSL) must be provided, otherwise it'll set it to #000000. Default theme is "light".</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>hsltype</strong></li>
+      <li><strong>Values:</strong> normal / luv</li>
+      <li><strong>Example:</strong> <inline-code>hsltype: luv;</inline-code></li>
+      <li><strong>Description:</strong> Sets the colors inside the color picker to use either HSL or <a href="http://www.hsluv.org/">HSL<sub>uv</sub></a> (<inline-code>hsluv.min.js</inline-code> required).</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>inputs</strong></li>
+      <li><strong>Values:</strong> false / true</li>
+      <li><strong>Example:</strong> <inline-code>inputs: true;</inline-code></li>
+      <li><strong>Description:</strong> Displays input fields for hue, saturation and lightness below the color picker, as well as a close button.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>addclass</strong></li>
+      <li><strong>Values:</strong> *</li>
+      <li><strong>Example:</strong> <inline-code>addclass: customclass;</inline-code></li>
+      <li><strong>Description:</strong> Adds a class attribute to the color picker. This provides more CSS customization options for the color picker. Usage of the <inline-code>!important</inline-code> rule may be necessary depending on the attribute being customized.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>update-self</strong></li>
+      <li><strong>Values:</strong> update¹, format²</li>
+      <li><strong>Example:</strong> <inline-code>update-self: none, rgb;</inline-code></li>
+      <li><strong>Description:</strong> Defines how the color picker will update the <inline-code>&lt;button&gt;</inline-code> or <inline-code>&lt;input&gt;</inline-code> element that it's currently assigned to. Defaults to "color, hex".</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>update-linked</strong></li>
+      <li><strong>Values:</strong> (id update¹ format²), (id update¹ format²), [...]</li>
+      <li><strong>Example:</strong> <inline-code>update-linked: (elementIdGoesHere color hsl);</inline-code></li>
+      <li><strong>Description:</strong> Defines how the color picker will update any number of other elements (the element's ID must be provided). Defaults to "both, hex".</li>
+    </ul><br>
+    
+    <p>² hex / rgb / hsl<br>
+    ¹ See the table below:</p>
+    
+    <ul>
+      <li><strong>none:</strong> Updates nothing. Invalid values are treated as "none".</li>
+      <li><strong>bg-color:</strong> Updates the background and will change the text color as necessary in order to keep it legible.</li>
+      <li><strong>bg-only:</strong> Updates the background but won't change the text color, which could cause ilegible text.</li>
+      <li><strong>text-color:</strong> Updates the text's color.</li>
+      <li><strong>border-color:</strong> Updates the border's color.</li>
+      <li><strong>outline-color:</strong> Updates the outline's color.</li>
+      <li><strong>text:</strong> Updates the element's text. Functionally equivalent to "none+text" (see below).</li>
+    </ul><br>
+    
+    <p>If you want the color to appear inside an element as text, you can add "+text" at the end of any of the values above. Note that this won't work for elements that can't have text inside them (ex. &lt;img&gt;). Also note that, due to the way that &lt;input&gt; elements work, their text will always get updated with the color value.</p>
+    
+    <h3>RHSL Functions</h3>
+    
+    <p>You're probably not going to need to use these functions, but in case you are coding a more advanced project, they might be helpful.</p>
+    
+    <ul>
+      <li><strong>RHSL.scan()</strong></li>
+      <li><strong>Description:</strong> Will scan through the entire page looking for elements with the rhslcolor attribute, associating them with the tool itself.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.addOrRemove(element, value, shouldRemove)</strong></li>
+      <li><strong>Description:</strong> Adds or removes an EventListener from a particular element, which connects or disconnects it from RHSL.</li>
+      <li><strong>element:</strong> Required. The element that it should add or remove an EventListener from.</li>
+      <li><strong>value:</strong> The color value that the element has. In most cases this is just <inline-code>element.value</inline-code>, but you can also give it custom values to work with. Defaults to #FFFFFF.</li>
+      <li><strong>shouldRemove:</strong> Will remove the EventListener if true, and add it if false.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.toggle(false, element, refresh)</strong></li>
+      <li><strong>Description:</strong> Toggles the color picker window ON or OFF for a particular element.</li>
+      <li><strong>element:</strong> Required. The element that the color picker should attach to.</li>
+      <li><strong>refresh:</strong> If true, it'll call itself again once it finishes, effectively refreshing the color picker.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.properties(properties, lookFor)</strong></li>
+      <li><strong>Description:</strong> Goes through all the properties inside the rhslcolor attribute of an element and returns an array.</li>
+      <li><strong>properties:</strong> Required. This should contain the text inside the rhscolor attribute, which is provided by <inline-code>element.getAttribute("rhslcolor")</inline-code>.</li>
+      <li><strong>lookFor:</strong> If true, it'll return only the value of the property provided (ex. providing <inline-code>"hsltype"</inline-code> will return <inline-code>"luv"</inline-code>).</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.alignElement(colorpicker, element, align)</strong></li>
+      <li><strong>Description:</strong> Realigns the colorpicker element against another element.</li>
+      <li><strong>colorpicker:</strong> Required. Can be retrieved by using <inline-code>document.getElementById("rhslcolorpickercontainer")</inline-code>.</li>
+      <li><strong>element:</strong> Required. The element that the colopicker will try to align to.</li>
+      <li><strong>align:</strong> Required. Must be either "left", "right" or "center".</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.windowResize()</strong></li>
+      <li><strong>Description:</strong> Realigns the colorpicker element against the currently-active element. It will fail if the color picker isn't currently open or if <inline-code>rhslCurrentElement</inline-code> doesn't contain a valid element.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.colorPicker(colorpicker, false, true, [hue, sat, lig])</strong></li>
+      <li><strong>Description:</strong> Provide valid hue/sat/lig to the color picker, along with the colorpicker element, and it'll update the color picker and the element's color.</li>
+      <li><strong>colorpicker:</strong> Required. Can be retrieved by using <inline-code>document.getElementById("rhslcolorpickercontainer").children[0]</inline-code>.</li>
+      <li><strong>hue:</strong> Optional. If provided, this will be the hue's value. If not, it'll keep the previous value. Must be in the set [0, 360].</li>
+      <li><strong>sat:</strong> Optional. If provided, this will be the saturation value. If not, it'll keep the previous value. Must be in the set [0, 100].</li>
+      <li><strong>lig:</strong> Optional. If provided, this will be the brightness value. If not, it'll keep the previous value. Must be in the set [0, 100].</li>
+      <li>Note: You can call <inline-code>rhslCurrentElement(element)</inline-code> to manipulate the element that the colorpicker will update.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.fineChange(element, color, isLUV, ignoreValue)</strong></li>
+      <li><strong>Description:</strong> This will update an element's colors.</li>
+      <li><strong>element:</strong> Required. The element to update.</li>
+      <li><strong>color:</strong> Required. The color in the HSL or HSLuv format, in the array [hue, sat, lig] where hue is in the set [0, 360] and the rest in the set [0, 100].</li>
+      <li><strong>isLUV:</strong> Set to true if the color is in the HSLuv format. If false, it'll treat it as if it was in the HSL format.</li>
+      <li><strong>ignoreValue:</strong> If true, it'll not update the element's value attribute.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.getPosition(element, noScroll)</strong></li>
+      <li><strong>Description:</strong> Returns the position of an element in the [x, y] format.</li>
+      <li><strong>element:</strong> Required.</li>
+      <li><strong>noScroll:</strong> If true, it'll calculate an element's position relative to the screen rather than the entire page.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.currentElement(element)</strong></li>
+      <li><strong>Description:</strong> Holds and updates the element that the colorpicker is currently assigned to.</li>
+      <li><strong>element:</strong> If provided (or if <inline-code>false</inline-code>), it'll change the current element. If not provided, it'll instead return the current element that's stored in it.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.colorConverter(color, toHSL)</strong></li>
+      <li><strong>Description:</strong> Validates colors and converts them to either RGB or HSL arrays.</li>
+      <li><strong>color:</strong> The color itself as a string, must be in either Hexadecimal, RGB or HSL.</li>
+      <li><strong>toHSL:</strong> If true, it'll convert the color to an HSL array. If false, it'll convert the color to an RGB array.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>RHSL.colorParser(color, changeTo, isLUV, toArray)</strong></li>
+      <li><strong>Description:</strong> Converts HSL/HSLuv colors to Hexadecimal, RGB or HSL as strings or arrays.</li>
+      <li><strong>color:</strong> Required. Must be in the [hue, sat, lig] format as an array.</li>
+      <li><strong>changeTo:</strong> Can be either "hex", "rgb" or "hsl", depending on the format you want.</li>
+      <li><strong>isLUV:</strong> Set to true if the color variable uses HSLuv values instead of normal HSL.</li>
+      <li><strong>toArray:</strong> If true, it won't convert the color values into a string, it'll keep them as an array.</li>
+    </ul><br>
+    
+    <h3>Other Functions</h3>
+    
+    <p>RHSL needs these functions in order to work, but they can also be used separately from RHSL.</p>
+    
+    <ul>
+      <li><strong>RHSL.isChildOf(child, parent):</strong> Checks to see if an element (child) is contained inside another element (parent).</li>
+      <br>
+      <li><strong>RHSL.rgbToHsl(r, g, b):</strong> Will take separate RGB values contained in the set [0, 255] and returns HSL values contained in the set [0, 1].</li>
+      <li><strong>RHSL.hslToRgb(h, s, l):</strong> Will take separate HSL values contained in the set [0, 1] and returns RGB values contained in the set [0, 255].</li>
+      <br>
+      <li><strong>window.hsluv.hsluvToHex([hue, sat, lig]):</strong> Converts an HSLuv value to a hex string. The hue must be contained in the set [0, 360], while the saturation and lightness must be in the set [0, 100].</li>
+      <li><strong>window.hsluv.hsluvToRgb([hue, sat, lig]):</strong> Like above, but returns an array of 3 numbers in the set [0, 1], for the r, g, and b channel.</li>
+      <li><strong>window.hsluv.hexToHsluv(hex):</strong> Converts a hexadecimal string to an array containing the HSLuv color. Note: The result can have rounding errors (ex. saturation can be 100.00000000000007). It's recommended to use <inline-code>Math.round()</inline-code>.</li>
+      <li><strong>window.hsluv.rgbToHsluv([r, g, b]):</strong> Like above, but red, green and blue must be contained in the set [0, 1].</li>
+      <br>
+    </ul>
+    
+    <p>The <inline-code>window.hsluv</inline-code> functions are provided by <a href="http://www.hsluv.org/">HSL<sub>uv</sub></a>.</p><br>
+    
+    <h3>HTML Content</h3>
+    
+    <ul>
+      <li><strong>div#rhslcolorpickercontainer</strong></li>
+      <li><strong>Parent Element:</strong> &lt;body&gt;</li>
+      <li><strong>Child Elements:</strong> div.rhslcolormousearea, &lt;style&gt;, div.rhslcolorinputs</li>
+      <li><strong>Description:</strong> This is the container element for the entirety of RHSL. It is absolute-positioned relative to the page, and it also has RHSL's border and background. The element is created and attatched to the document as the last element inside of &lt;body&gt; when <inline-code>rhslToggle()</inline-code> is called.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>div.rhslcolormousearea</strong></li>
+      <li><strong>Parent Element:</strong> div#rhslcolorpickercontainer</li>
+      <li><strong>Child Elements:</strong> div.rhslcolorpicker, div.rhslcolorpickerside</li>
+      <li><strong>Description:</strong> This element contains the main part of the color picker. Clicking inside this element will call <inline-code>rhslColorPicker()</inline-code>.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>div.rhslcolorpicker</strong></li>
+      <li><strong>Parent Element:</strong> div.rhslcolormousearea</li>
+      <li><strong>Child Elements:</strong> &lt;div&gt;, img.rhslcolorpickerselected (nested child element)</li>
+      <li><strong>Description:</strong> This element contains RHSL's hue and saturation window. The outer div has the hue gradient and the border, while the inner div contains a transparent-to-gray gradient, representing the saturation. Inside the inner div is an 20x20 absolute-positioned image relative to the outer div, which serves as the cursor.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>div.rhslcolorpickerside</strong></li>
+      <li><strong>Parent Element:</strong> div.rhslcolormousearea</li>
+      <li><strong>Child Elements:</strong> img.rhslcolorpickerselected</li>
+      <li><strong>Description:</strong> This element contains RHSL's brightness slider. Inside it is an 20x20 absolute-positioned image relative to its parent, which serves as the cursor.</li>
+    </ul><br>
+    
+    <ul>
+      <li><strong>div.rhslcolorinputs</strong></li>
+      <li><strong>Parent Element:</strong> div.rhslcolormousearea</li>
+      <li><strong>Child Elements:</strong> input.rhslcolorinput (3), button</li>
+      <li><strong>Description:</strong> This element contains and adjacent part of RHSL. It is only present there if the <inline-code>inputs: true;</inline-code> attribute is used. It contains a &lt;style&gt; tag right before it and three input elements inside it, along with a button element. Each input changes one axis (hue, saturation and brightness, respectively). Clicking the button closes the color picker window.</li>
+    </ul><br>
+    
+    <h3>Helpful Images/Diagrams</h3>
+    
+    <ul>
+      <li><a href="images/rhsl_img1.png">Using RHSL.colorParser and RHSL.colorConverter</a></li>
+      <li><a href="images/rhsl_img2.png">HTML elements used by RHSL</a></li>
+    </ul>
+
+  </section>
+
+  <footer>© 2018-2021 - RanAwaySuccessfully</footer>
+
+</body>
+</html>

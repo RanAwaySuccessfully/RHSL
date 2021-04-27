@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <title>RHSL - A lightweight and simple JS color picker tool</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <meta name="description" content="RHSL is a lightweight customizable color picker for websites. It can use either the HSL or HSLuv color space, but it supports converting from and to other formats.">
+  <link rel="icon" type="image/png" href="images/site_square.png">
+  <link rel="stylesheet" href="css.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata|Lato:400,400i,700,700i">
+  <script src="hsluv.min.js" async></script>
+  <script src="rhsl.js" defer></script>
+</head>
+<body>
+
+  <header>
+    <a href="index"><img src="images/site_logo.png" width="240" height="100" alt="RHSL Logo"></a><br>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="index" class="active">Main Page</a></li>
+      <li><a href="examples">Examples</a></li>
+      <li><a href="docs">Documentation</a></li>
+    </ul>
+  </nav>
+
+  <section>
+    
+    <p><strong>RHSL</strong> is a lightweight color picker that uses the HSL color space, and alternatively supports <a href="http://www.hsluv.org/">HSL<sub>uv</sub></a>. It's made to be very easy for developers to implement on their website, and also very easy for the end user to utilize.</p>
+    
+    <p>The following code is all that is required to implement RHSL:</p>
+    
+    <div class="htmlexample">
+    
+      <pre><code>&lt;link rel="stylesheet" href="rhsl.css"&gt;
+&lt;script src="hsluv.min.js"&gt;&lt;/script&gt;
+&lt;script src="rhsl.js" defer&gt;&lt;/script&gt;
+
+&lt;input value="#4C65AE" rhslcolor&gt;</code></pre>
+    
+      <div>
+        <input value="#4C65AE" rhslcolor>
+      </div>
+      
+    </div>
+    
+    <h3>Features</h3>
+    <ul>
+      <li><strong>Lightweight:</strong> It only occupies <strong>31KB</strong> of space (with HSLuv). Its interface is very compact and out of the way as well. It also comes with a minified version that occupies even less space.</li>
+      <li><strong>Cross-browser:</strong> It is fully functional on the latest versions of all major desktop and mobile browsers, including Internet Explorer.</li>
+      <li><strong>Completely customizable:</strong> By clever use of the <inline-code>rhslcolor</inline-code> attribute, it's possible to change the color picker's size, theme, and updating properties.</li>
+    </ul><br>
+    
+    <h3>Download</h3>
+    <p>You can download the latest version of RHSL along with HSL<sub>uv</sub> by <a href="rhsl.zip">clicking here.</a></p>
+    
+    <p>Current Version: <strong>v2.0</strong></p>
+    
+    <p><small>Older releases are available on <a href="https://github.com/RanAwaySuccessfully/RHSL/releases">GitHub.</a></small></p>
+    
+    <h3>License</h3>
+    
+    <p>RHSL is provided under the <a href="https://github.com/RanAwaySuccessfully/RHSL/blob/dev/LICENSE.md">ISC License</a> and its source code is available on <a href="https://github.com/RanAwaySuccessfully/RHSL">GitHub.</a></p>
+    
+    <h3>How To Use</h3>
+    <p>After adding the color picker's files to your webpage, you can add <inline-code>rhslcolor</inline-code> to any <inline-code>&lt;button&gt;</inline-code> or <inline-code>&lt;input&gt;</inline-code> element. Once the page loads, it'll immediatelly scan the entire page, looking for elements with that attribute so it can connect them to RHSL.</p>
+    
+    <p>In order to customize the color picker and how it'll behave, you can add properties to the rhslcolor attribute. Those properties are documented in more detail in <a href="docs">this page</a>, along with many functions which you can use to dynamically manipulate the color picker itself.</p>
+  </section>
+  
+  <footer>© 2018-2021 - RanAwaySuccessfully</footer>
+  
+</body>
+</html>
