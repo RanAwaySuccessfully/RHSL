@@ -1,0 +1,22 @@
+{
+  "name": "rhsl",
+  "version": "2.0.0",
+  "description": "RHSL Color Picker",
+  "main": "rhsl.js",
+  "scripts": {
+    "minify": "npx minify rhsl.js > rhsl.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RanAwaySuccessfully/RHSL.git"
+  },
+  "author": "RanAwaySuccessfully",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RanAwaySuccessfully/RHSL/issues"
+  },
+  "homepage": "https://github.com/RanAwaySuccessfully/RHSL#readme",
+  "devDependencies": {
+    "minify": "^7.0.1"
+  }
+}
